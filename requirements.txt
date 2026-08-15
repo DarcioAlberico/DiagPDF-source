@@ -1,0 +1,19 @@
+# Deliberately an explicit list rather than `-e .[gui,moves]`: this file is the
+# install path both READMEs document, and a reader copying from it should see
+# what they are getting. It duplicates pyproject.toml -- keep the two in step.
+
+fpdf2>=2.7.0
+fonttools>=4.40.0
+pillow>=9.0.0
+python-docx>=1.1.2
+
+# The two below are optional -- the extras `moves` and `gui` in pyproject.toml.
+
+# Needed only for diagrams taken from a game's moves -- --at-move,
+# --every and --at-comment. All three go through the same replay, so the
+# marker one needs it too. Without it those options report what to install.
+chess>=1.10
+
+# The Sun Valley theme for the window. Without it the GUI still runs:
+# apply_theme falls back to ttk's `clam` with the palette set by hand.
+sv-ttk>=2.6.0

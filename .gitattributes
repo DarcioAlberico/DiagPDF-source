@@ -1,0 +1,19 @@
+# Text is stored and checked out with LF, on Windows too: the CI added in the
+# next phase runs on Linux as well, and the working tree here is already LF.
+* text=auto eol=lf
+
+# Corpus input. output_snapshot.py digests what these files produce, so they
+# are handed over byte for byte, with no end-of-line conversion at all.
+*.pgn -text
+*.fen -text
+
+# Never touch these — they are not text.
+*.ttf binary
+*.TTF binary
+*.otf binary
+*.pdf binary
+*.docx binary
+*.doc  binary
+*.epub binary
+*.zip  binary
+*.ico  binary

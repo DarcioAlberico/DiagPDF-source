@@ -1,0 +1,10 @@
+# Development and test dependencies.
+#   pip install -r requirements.txt -r requirements-dev.txt
+#   pytest
+-r requirements.txt
+pytest>=8.0
+
+# Optional: EPUB 3 conformance is checked against the reference validator when
+# it is available. Install epubcheck and put it on PATH, or point EPUBCHECK_JAR
+# at the jar. Without it that single test is skipped — the suite still checks
+# the same rules itself (see tests/inspectors.py, epub3_problems).

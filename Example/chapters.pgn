@@ -1,0 +1,41 @@
+[Event "Pin 1"]
+[Chapter "Pins"]
+[White "Study"]
+[Black "One"]
+[SetUp "1"]
+[FEN "r4brk/5p1p/2bp1P2/p3p2N/1pq1P3/5N1Q/PPP4P/1K1RR3 w - - 0 1"]
+
+{White to move and win} 1. Nxf6 Rxf6 2. Qxh7+ *
+
+[Event "Pin 2"]
+[White "Study"]
+[Black "Two"]
+[SetUp "1"]
+[FEN "4k3/8/8/8/8/8/8/4K3 w - - 0 1"]
+
+{A bare king ending} 1. Ke2 Kd7 *
+
+[Event "Pin 3"]
+[White "Study"]
+[Black "Three"]
+[SetUp "1"]
+[FEN "8/8/8/8/8/5k2/8/5K2 b - - 0 1"]
+
+{Black to move} 1... Kg3 *
+
+[Event "Fork 1"]
+[Chapter "Forks"]
+[White "Study"]
+[Black "Four"]
+[SetUp "1"]
+[FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"]
+
+{The opening position} 1. e4 e5 2. Nf3 *
+
+[Event "Fork 2"]
+[White "Study"]
+[Black "Five"]
+[SetUp "1"]
+[FEN "2kr3r/ppp2ppp/2n5/8/8/2N5/PPP2PPP/2KR3R w - - 0 1"]
+
+{Both sides castled long} 1. Nd5 *
