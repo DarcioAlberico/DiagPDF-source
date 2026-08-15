@@ -12,9 +12,13 @@ apagaria as únicas cópias, então elas foram extraídas antes.
 
 Na **0.16.0** estas cópias deixaram de ser só material de referência: são a
 entrada de [`../build_alphadg.py`](../build_alphadg.py), que as junta, devolve o
-mapa de caracteres e desenha o que falta, produzindo a `Fonts/AlphaDG.ttf` que o
-programa agora instala. Os arquivos aqui continuam intocados — a fonte é gerada,
-não editada à mão, e o script pode ser rodado de novo a qualquer momento.
+mapa de caracteres e desenha o que falta, produzindo a `Fonts/AlphaDG.ttf`. Os
+arquivos aqui continuam intocados — a fonte é gerada, não editada à mão.
+
+**A `Fonts/AlphaDG.ttf` não é versionada.** O repositório guarda a matéria-prima
+e a receita, não o arquivo de fonte pronto; quem clonar roda o script uma vez. É
+também o que a CI faz antes de testar e antes de montar o `.exe`, de modo que o
+script não pode apodrecer sem alguém notar.
 
 | Arquivo | Origem |
 |---|---|

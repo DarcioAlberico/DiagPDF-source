@@ -292,8 +292,10 @@ def build(check_only: bool) -> int:
         print('\n--check: nothing written')
         return 0
 
-    # 3. assemble: base font, plus the circle pair, plus the three made here
-    font = TTFont(RECOVERED / BASE[0])
+    # 3. assemble: base font, plus the circle pair, plus the three made here.
+    # recalcTimestamp=False or fontTools stamps the save time into head.modified
+    # and two builds of the same input stop matching byte for byte.
+    font = TTFont(RECOVERED / BASE[0], recalcTimestamp=False)
     glyf, hmtx = font['glyf'], font['hmtx']
     order = list(font.getGlyphOrder())
     char_to_glyph = dict(base_names)

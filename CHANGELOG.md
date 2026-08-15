@@ -75,6 +75,26 @@ mesmo que a 0.15.0 tinha achado com `'Zurich'` no teste de figurine. Agora o nom
 vem de `MISSING_FONT` no `conftest.py`, **afirmado ausente na carga**: instalar
 uma fonte com esse nome falha ali e em lugar nenhum mais.
 
+### A fonte é gerada, não distribuída
+
+`Fonts/AlphaDG.ttf` **não entra no repositório**. Versionados ficam a
+matéria-prima (`Fonts-recovered/`) e a receita (`build_alphadg.py`); quem clona
+roda o script uma vez:
+
+```bash
+python build_alphadg.py
+```
+
+A CI o executa antes de testar e antes de montar o `.exe` — que empacota tudo que
+estiver em `Fonts/`, então a ordem importa. Assim o script não pode apodrecer sem
+alguém notar: ele se recusa a escrever se as regras de que deriva os caracteres
+que faltam deixarem de valer.
+
+Duas construções da mesma entrada dão o **mesmo arquivo byte a byte**. Não davam:
+o fontTools carimba a hora do `save` em `head.modified` por padrão, e artefato de
+build que muda sozinho a cada execução não serve para comparar nada. Rodar sem a
+fonte também foi conferido — 17 fontes, suíte verde, é o estado de quem clona.
+
 ### Compatibilidade
 
 Os **182 documentos do corpus saem idênticos** aos de antes da fonte existir

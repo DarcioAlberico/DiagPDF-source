@@ -51,6 +51,12 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements-dev.txt
 
+      # Fonts/AlphaDG.ttf is generated, not committed. Building it here also
+      # tests the builder: it refuses to write if the rules it derives the
+      # missing characters from stop holding.
+      - name: Build AlphaDG
+        run: python build_alphadg.py
+
       - name: Fetch epubcheck ${{ env.EPUBCHECK_VERSION }}
         shell: bash
         run: |
@@ -151,6 +157,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt pyinstaller
+
+      # The spec bundles everything in Fonts/, so this has to run first or the
+      # executable ships without the font.
+      - name: Build AlphaDG
+        run: python build_alphadg.py
 
       - name: Build
         run: pyinstaller fen2pdf.spec

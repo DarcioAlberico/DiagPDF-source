@@ -19,7 +19,8 @@ Grab the latest **DiagPDF.exe** from [Releases](../../releases) — no Python re
 - **Diagrams from a game's moves**, so an ordinary PGN works — no `[FEN]` tag needed
 - Writes `.pdf`, `.tex`, `.html`, `.epub`, `.docx`, `.rtf`, `.md`
 - 7 page layouts: 1–4 columns, up to 20 diagrams per page
-- 18 board fonts — run `--list-fonts` for the list installed on your copy
+- 17 board fonts bundled, plus `AlphaDG` rebuilt by `build_alphadg.py` — run
+  `--list-fonts` for the list installed on your copy
 - **Drop a font into `Fonts/` and it is picked up**, with its piece map chosen
   from the glyphs it actually carries rather than from its file name
 - To-move indicator: square □■, circle ○●, triangle △▲
@@ -57,8 +58,12 @@ Grab the latest **DiagPDF.exe** from [Releases](../../releases) — no Python re
 
 ```bash
 pip install -r requirements.txt
+python build_alphadg.py          # optional: adds the AlphaDG board font
 python fen2rtf.py --gui
 ```
+
+The middle line rebuilds one board font from material in the repository; skip it
+and the other 17 work as they are. See [Fonts](#fonts) for what it does.
 
 Two of those are optional and the file says which: `chess` for diagrams taken
 from a game's moves, and `sv-ttk` for the window's Sun Valley theme. Skip either
@@ -382,6 +387,7 @@ tests/              pytest suite (1427 tests)
 test_smoke.py       One file per output format
 test_batch.py       Batch test: all setting combinations
 output_snapshot.py  Proves a refactor did not change the generated documents
+build_alphadg.py    Rebuilds the AlphaDG board font from Fonts-recovered/
 requirements.txt    Runtime dependencies
 requirements-dev.txt Test dependencies
 icon.ico            Application icon
@@ -650,11 +656,18 @@ letters and no full alphabet. The recovery was checked against the extracted
 Fonts with a broken VDMX table are patched automatically on first run; the
 patched copy is saved as `*_patch.ttf` and reused.
 
-> **`AlphaDG.ttf` is rebuilt, not original.** Earlier releases documented it
-> without shipping it. The 2011 example PDFs carry it embedded, and 52 of the 56
-> characters the renderers need survive there; [`build_alphadg.py`](build_alphadg.py)
-> merges those subsets, restores the character map the extraction dropped, and
-> derives the four that are missing:
+> **`AlphaDG.ttf` is generated, not shipped.** It is not in `Fonts/` after a
+> clone, and not in the repository at all — build it once:
+>
+> ```bash
+> python build_alphadg.py
+> ```
+>
+> Earlier releases documented the font without shipping it. The 2011 example PDFs
+> carry it embedded, and 52 of the 56 characters the renderers need survive
+> there; [`build_alphadg.py`](build_alphadg.py) merges those subsets, restores
+> the character map the extraction dropped, and derives the four that are
+> missing:
 >
 > | Character | What it is | Where it comes from |
 > |---|---|---|
