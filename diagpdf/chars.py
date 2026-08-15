@@ -40,7 +40,9 @@ CHESS_MERIDA: dict[tuple, str] = {
 
 BDR_NW = '!'; BDR_N = 'z'; BDR_NE = '#'
 BDR_SW = '&'; BDR_S = "'"; BDR_SE = '('
-BDR_E  = '%'
+# The left edge only appears without coordinates: with them, it comes inside
+# the rank characters. It is a required character all the same.
+BDR_E  = '%'; BDR_W = '$'
 RANK_CHARS = [chr(0xE0 + i) for i in range(8)]   # rank 1..8 with left border
 FILE_CHARS = [chr(0xE8 + i) for i in range(8)]   # file a..h with bottom border
 MERIDA_SIMPLE_RANK_CHARS = [chr(0xC0 + i) for i in range(8)]
@@ -81,7 +83,7 @@ BORDER_STYLE_KEYS = ('simple', 'double', 'none')
 
 _ALPHA_REQUIRED_CHARS = (
     set(ALPHA_DG.values())
-    | {BDR_NW, BDR_N, BDR_NE, BDR_SW, BDR_S, BDR_SE, BDR_E}
+    | {BDR_NW, BDR_N, BDR_NE, BDR_SW, BDR_S, BDR_SE, BDR_E, BDR_W}
     | set(RANK_CHARS)
     | set(FILE_CHARS)
     | {ch for pair in SYMBOL_CHARS.values() for ch in pair}

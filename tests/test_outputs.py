@@ -6,7 +6,7 @@ import re
 
 import inspectors as I
 import pytest
-from conftest import PGN_THREE_GAMES, PGN_WITH_CHAPTERS
+from conftest import MISSING_FONT, PGN_THREE_GAMES, PGN_WITH_CHAPTERS
 
 import fen2rtf as F
 
@@ -56,7 +56,7 @@ def test_unknown_extensions_fall_back_to_pdf(tmp_path, base_opts, one_position):
 
 
 def test_an_unknown_font_is_rejected_by_every_format(tmp_path, base_opts, one_position, out_format):
-    base_opts['font'] = 'AlphaDG'
+    base_opts['font'] = MISSING_FONT
     with pytest.raises(F.UnknownFontError):
         F.generate_output(one_position, base_opts, tmp_path / f'bad{out_format}')
 

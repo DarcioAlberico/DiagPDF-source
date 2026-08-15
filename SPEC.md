@@ -311,6 +311,14 @@ Presentes hoje: 16 fontes de tabuleiro (13 tipo Merida, 3 legado DG) e 1 figurin
 > regerados. Não foi instalada — uma fonte 52/55 anunciada em `FONT_NAMES`
 > renderiza errado com `--no-coords` e `--symbol triangle` sem dizer nada, que é
 > exatamente o defeito descrito aqui.
+>
+> **Situação em 0.16.0:** instalada. O `build_alphadg.py` junta os subconjuntos,
+> devolve o `cmap` que a extração descartou e deriva os quatro caracteres que
+> faltavam — `'` e `$` por espelhamento, com a regra conferida contra as fontes
+> que têm os dois lados, e os dois triângulos desenhados a partir da forma comum
+> à família. O primeiro diagrama dos três exemplos sai idêntico pixel a pixel ao
+> de 2011. A verificação de completude passou a exigir **56** caracteres: o `$`
+> faltava na lista embora o `fen.py` o usasse.
 
 **Correção**
 1. `resolve_board_font(name)` lança `UnknownFontError` com a lista de fontes
@@ -326,6 +334,9 @@ Presentes hoje: 16 fontes de tabuleiro (13 tipo Merida, 3 legado DG) e 1 figurin
 > corrigidos, e dois dos três TTFs restaurados. `_FALLBACK_FIGURINE_FILES` casa
 > agora com o que existe; `_FALLBACK_FONT_FILES` ainda cita `AlphaDG.ttf`, que
 > segue por comprar.
+>
+> **Situação em 0.16.0:** o item 4 fecha. Os três TTFs estão em `Fonts/` e o
+> `_FALLBACK_FONT_FILES` deixou de citar arquivo que não existe.
 
 **Aceitação:** nome desconhecido produz erro acionável; teste confirma que toda
 fonte anunciada em `FONT_NAMES` renderiza com o mapa correto.
@@ -869,6 +880,11 @@ Markdown com diagramas em Unicode ou imagem; LaTeX usando `chessboard`/`skak`.
 > `LinaresFigurine.TTF` foram restauradas na 0.15.0 e o texto passou a descrevê-las
 > como o que são — subconjuntos recuperados de `chesswin.pdf`. Só a `AlphaDG.ttf`
 > continua citada e ausente, agora com a ressalva explícita no README.
+>
+> **Situação em 0.16.0 (Doc3):** fechado. São 18 fontes de tabuleiro: a
+> `AlphaDG.ttf` foi remontada a partir das cópias embutidas nos exemplos de 2011
+> e instalada, e o README descreve o que nela é recuperado e o que é desenhado.
+> Nenhum dos três nomes que o README citava sem existir continua sem arquivo.
 >
 > **Situação em 0.15.0 (Doc6):** o `README_RU.md` estava parado no release
 > original — anunciava saída só em PDF, 4 fontes de tabuleiro, `AlphaDG` como

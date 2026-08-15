@@ -14,11 +14,11 @@ na tag `[Event]` (`1.1 Сочи`), e o mesmo cabeçalho.
 ```bash
 python fen2rtf.py Example/examples.pgn -o Example/ex1_2col_alpha_plain.pdf \
   --title-template "{event}" --header "Шахматные задачи" \
-  -l 2 -f chess-alpha --symbol circle
+  -l 2 -f AlphaDG --symbol circle
 
 python fen2rtf.py Example/examples.pgn -o Example/ex2_2col_alpha_lines.pdf \
   --title-template "{event}" --header "Шахматные задачи" \
-  -l 2 -f chess-alpha --symbol square --lines 2
+  -l 2 -f AlphaDG --symbol square --lines 2
 
 python fen2rtf.py Example/examples.pgn -o Example/ex3_2col_leipzig_numbered.pdf \
   --title-template "{event}" --header "Шахматные задачи" \
@@ -26,7 +26,7 @@ python fen2rtf.py Example/examples.pgn -o Example/ex3_2col_leipzig_numbered.pdf 
 
 python fen2rtf.py Example/examples.pgn -o Example/ex4_2col_answers_1col.pdf \
   --title-template "{event}" --header "Шахматные задачи" \
-  -l 2 -f chess-alpha --symbol square --answers --answers-cols 1 --figurine-font Zurich
+  -l 2 -f AlphaDG --symbol square --answers --answers-cols 1 --figurine-font Zurich
 
 python fen2rtf.py Example/examples.pgn -o Example/ex5_3col_answers_2col.pdf \
   --title-template "{event}" --header "Шахматные задачи" \
@@ -37,21 +37,26 @@ python fen2rtf.py Example/examples.pgn -o Example/ex6_4col_kingdom.pdf \
   -l 4 -f KingdomDG --symbol triangle
 ```
 
-## O que mudou na 0.15.0
+## O que mudou na 0.16.0
 
-Os três exemplos com `alpha` no nome tinham sido gerados com a **`AlphaDG`**, que
-não está em `Fonts/`. Passaram para a `chess-alpha`, que usa o mesmo mapa de peças
-— os diagramas saem com o mesmo desenho, e a borda superior também, porque o
-`_board_top_fill` cai para `"` na ausência do `z` e o resultado é visualmente
-igual.
+Os três exemplos com `alpha` no nome **voltaram para a `AlphaDG`**, a fonte com
+que foram feitos em 2011. Ela foi remontada nesta versão a partir das cópias que
+os próprios PDFs carregavam — veja
+[`../Fonts-recovered/`](../Fonts-recovered/README.md) e
+[`../build_alphadg.py`](../build_alphadg.py).
 
-A diferença real está no **indicador de lance**: a `chess-alpha` não tem os glifos
-`F G I M f i`, então o marcador vem de um caractere Unicode da fonte de texto em
-vez do próprio tabuleiro. Ele fica menor que o original. É o que
-`FONTS_WITHOUT_EMBEDDED_INDICATOR` prevê.
+O primeiro diagrama de cada um dos três sai **idêntico pixel a pixel** ao do
+arquivo de 2011 (670×616, 56.782 pixels de tinta no `ex1`, zero divergentes).
+É essa comparação que diz que o mapa de caracteres recuperado está certo — não
+a inspeção do arquivo de fonte, que pareceria bem-formada de qualquer jeito.
 
-As cópias da `AlphaDG` que aqueles PDFs carregavam foram extraídas antes de
-regravar — veja [`../Fonts-recovered/`](../Fonts-recovered/README.md).
+## O que tinha mudado na 0.15.0
+
+Entre a 0.15.0 e a 0.16.0 estes três rodaram com a `chess-alpha`, que usa o mesmo
+mapa de peças mas não tem os glifos `F G I M f i`: o indicador de lance vinha de
+um caractere Unicode da fonte de texto, menor que o do tabuleiro, como
+`FONTS_WITHOUT_EMBEDDED_INDICATOR` prevê. Com a `AlphaDG` de volta, o indicador
+volta a ser desenhado pela própria fonte, dentro da moldura.
 
 O `ex4` é o primeiro exemplo que realmente usa a **`Zurich`**: antes da 0.15.0 a
 fonte não existia em `Fonts/`, e pedir por ela era erro.

@@ -12,6 +12,18 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 import fen2rtf as F  # noqa: E402  (needs the path insert above)
 
+# ── A name no font answers to ─────────────────────────────────────────────────
+# Every test that checks the unknown-font path used to spell it 'AlphaDG', which
+# worked only for as long as that font was missing. When 0.16.0 rebuilt it, the
+# twelve tests that name it went from testing the error path to testing nothing
+# — the same trap the figurine tests fell into with 'Zurich' in 0.15.0. This
+# name is asserted absent, so adding a font called it fails here and nowhere
+# else.
+MISSING_FONT = 'NoSuchBoardFontDG'
+assert MISSING_FONT not in F.FONT_NAMES, (
+    f'{MISSING_FONT} is installed now — pick another name for the unknown-font tests'
+)
+
 # ── Sample positions ──────────────────────────────────────────────────────────
 
 START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'

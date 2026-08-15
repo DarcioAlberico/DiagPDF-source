@@ -4,11 +4,17 @@ Nada aqui é usado pelo programa. `Fonts-recovered/` não é lido por `_scan_fon
 que varre `Fonts/` — isto é material de referência, guardado porque não existe em
 mais nenhum lugar do repositório.
 
-## `Chess Alpha DG` — a que falta comprar
+## `Chess Alpha DG` — a matéria-prima da fonte remontada
 
 Os PDFs de exemplo originais, gerados em 2011 quando o autor ainda tinha a fonte,
 carregam a **`Chess Alpha DG` de verdade** embutida. Regenerar aqueles arquivos
 apagaria as únicas cópias, então elas foram extraídas antes.
+
+Na **0.16.0** estas cópias deixaram de ser só material de referência: são a
+entrada de [`../build_alphadg.py`](../build_alphadg.py), que as junta, devolve o
+mapa de caracteres e desenha o que falta, produzindo a `Fonts/AlphaDG.ttf` que o
+programa agora instala. Os arquivos aqui continuam intocados — a fonte é gerada,
+não editada à mão, e o script pode ser rodado de novo a qualquer momento.
 
 | Arquivo | Origem |
 |---|---|
@@ -17,26 +23,32 @@ apagaria as únicas cópias, então elas foram extraídas antes.
 | `ChessAlphaDG--from-ex4_2col_answers_1col.ttf` | `Example/ex4_2col_answers_1col.pdf` |
 | `source-pdfs/` | Os três PDFs originais, para a extração poder ser refeita e conferida |
 
-**Cobertura: 52 dos 55 caracteres** que `_ALPHA_REQUIRED_CHARS` exige. Faltam três:
+**Cobertura: 52 dos 56 caracteres** que `_ALPHA_REQUIRED_CHARS` exige. Faltam
+quatro, e cada um falta por um motivo que se explica:
 
-| Falta | O que é | Por que não está lá |
-|---|---|---|
-| `'` (0x27) | Preenchimento da borda inferior | Com coordenadas ligadas, a base é desenhada pelos caracteres de coluna (0xE8-0xEF), não por esse |
-| `f` (0x66) | Indicador triangular, lance das brancas | Os exemplos usaram o círculo e o quadrado |
-| `i` (0x69) | Indicador triangular, lance das pretas | idem |
+| Falta | O que é | Por que não está lá | De onde saiu na 0.16.0 |
+|---|---|---|---|
+| `'` (0x27) | Preenchimento da borda inferior | Com coordenadas ligadas, a base é desenhada pelos caracteres de coluna (0xE8-0xEF) | `z` espelhado — a regra vale exato para os dois pares de canto que a Alpha ainda tem |
+| `$` (0x24) | Borda esquerda | Idem: com coordenadas, a lateral vem dentro dos caracteres de linha | `%` espelhado na horizontal, como Leipzig, Condal e Kingdom o desenham |
+| `f` (0x66) | Indicador triangular, brancas | Os exemplos usaram o círculo e o quadrado | **Desenhado**: forma comum às três fontes da família, ajustada à caixa e à espessura da própria Alpha |
+| `i` (0x69) | Indicador triangular, pretas | idem | idem |
 
-**Estas fontes não têm `cmap`.** O fpdf2 embute subconjuntos CID-keyed com
-codificação Identity e descarta a tabela de caracteres; o mapeamento vive no
-CMap `ToUnicode` do PDF. Ele foi lido de volta e está em `charmap.json`, indexado
-pelo codepoint que aparece no texto do PDF (o fpdf2 escreve fontes simbólicas
-pela área privada `U+F000`).
+O `$` só apareceu quando a fonte foi montada e testada com `--no-coords`: o
+tabuleiro saiu **sem a borda esquerda**. `_ALPHA_REQUIRED_CHARS` não pedia esse
+caractere, embora o `fen.py` o usasse — a lista dizia 55 onde o programa precisa
+de 56. Corrigido na mesma versão.
 
-Para montar uma `AlphaDG.ttf` utilizável seria preciso reconstruir o `cmap` a
-partir desse arquivo e desenhar os três glifos que faltam. **Isso não foi feito de
-propósito:** uma fonte 52/55 instalada em `Fonts/` renderiza errado com
-`--no-coords` e com `--symbol triangle`, em silêncio — exatamente a corrupção que
-a resolução estrita do defeito C8 existe para impedir. Melhor um erro claro
-dizendo que a fonte não existe.
+**Estas fontes não têm `cmap`.** São subconjuntos CID-keyed com codificação
+Identity: a tabela de caracteres foi descartada e o mapeamento vive no CMap
+`ToUnicode` do PDF. Ele foi lido de volta e está em `charmap.json`, indexado pelo
+codepoint que aparece no texto do PDF (fontes simbólicas são escritas pela área
+privada `U+F000`).
+
+⚠️ **O `charmap.json` não basta para remontar a fonte**, e é a armadilha em que
+se cai primeiro: o código no texto da página é um **CID**, não um glyph id. Estes
+arquivos trazem um `/CIDToGIDMap` de verdade, e tratar CID como glyph id produz
+uma fonte bem-formada em que o rei é uma tira de borda. O
+[`../build_alphadg.py`](../build_alphadg.py) lê o `CIDToGIDMap` de cada PDF.
 
 ## `ZurichFigurine` e `HastingsFigurine` — amostras de conferência
 

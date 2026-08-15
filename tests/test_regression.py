@@ -13,6 +13,8 @@ import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path
 
+from conftest import MISSING_FONT
+
 import fen2rtf as F
 
 PGN_TWO_GAMES = '''[Event "G1"]
@@ -132,7 +134,7 @@ def test_r3_line_comments_and_escape_lines_are_stripped():
 
 def test_c8_unknown_font_raises_instead_of_serving_the_wrong_file():
     try:
-        F.resolve_board_font('AlphaDG')
+        F.resolve_board_font(MISSING_FONT)
     except F.UnknownFontError as exc:
         assert 'Available' in str(exc)
         return

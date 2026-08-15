@@ -11,6 +11,7 @@ from .chars import (
     BDR_S,
     BDR_SE,
     BDR_SW,
+    BDR_W,
     CHESS_MERIDA,
     FILE_CHARS,
     MERIDA_BORDER_SETS,
@@ -191,7 +192,7 @@ def fen_to_diagram(
         else:
             lines.append('!' + top_fill * 8 + '#')
             for ri in rank_order:
-                row = '$'
+                row = BDR_W
                 for fi in file_order:
                     piece = board[ri][fi]
                     dark = (fi + ri) % 2 == 0

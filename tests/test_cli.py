@@ -8,7 +8,7 @@ from pathlib import Path
 
 import inspectors as I
 import pytest
-from conftest import PGN_THREE_GAMES, PROJECT_ROOT
+from conftest import MISSING_FONT, PGN_THREE_GAMES, PROJECT_ROOT
 
 import fen2rtf as F
 
@@ -155,7 +155,7 @@ def test_unknown_extension_is_rejected(tmp_path):
 
 
 def test_unknown_font_lists_the_available_ones(pgn, tmp_path):
-    result = run_cli(str(pgn), '-o', str(tmp_path / 'x.pdf'), '-f', 'AlphaDG')
+    result = run_cli(str(pgn), '-o', str(tmp_path / 'x.pdf'), '-f', MISSING_FONT)
     assert result.returncode != 0
     assert 'invalid choice' in result.stderr
     assert F._default_board_font_name() in result.stderr

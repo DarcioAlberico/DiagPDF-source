@@ -14,7 +14,7 @@ import time
 from pathlib import Path
 
 import pytest
-from conftest import PGN_THREE_GAMES, PROJECT_ROOT
+from conftest import MISSING_FONT, PGN_THREE_GAMES, PROJECT_ROOT
 
 from diagpdf.gui import filetypes, preview
 from diagpdf.gui import settings as settings_mod
@@ -394,7 +394,7 @@ def test_the_preview_uses_the_given_position(base_opts):
 
 def test_an_unknown_font_gives_a_message_not_a_crash(base_opts):
     with pytest.raises(preview.PreviewUnavailable):
-        preview.render_preview_png({**base_opts, 'font': 'AlphaDG'})
+        preview.render_preview_png({**base_opts, 'font': MISSING_FONT})
 
 
 def test_the_preview_fits_the_panel(base_opts):

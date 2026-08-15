@@ -19,7 +19,7 @@ Grab the latest **DiagPDF.exe** from [Releases](../../releases) — no Python re
 - **Diagrams from a game's moves**, so an ordinary PGN works — no `[FEN]` tag needed
 - Writes `.pdf`, `.tex`, `.html`, `.epub`, `.docx`, `.rtf`, `.md`
 - 7 page layouts: 1–4 columns, up to 20 diagrams per page
-- 17 board fonts — run `--list-fonts` for the list installed on your copy
+- 18 board fonts — run `--list-fonts` for the list installed on your copy
 - **Drop a font into `Fonts/` and it is picked up**, with its piece map chosen
   from the glyphs it actually carries rather than from its file name
 - To-move indicator: square □■, circle ○●, triangle △▲
@@ -634,7 +634,7 @@ Two families ship with different character maps:
 | Family | Fonts | Notes |
 |--------|-------|-------|
 | Merida-compatible | `ChessMerida` and the `Chess *` set | Default; supports `--border simple/double/none` |
-| Legacy DG | `LeipzigDG`, `CondalDG`, `KingdomDG` | Draws the to-move marker inside the board frame |
+| Legacy DG | `AlphaDG`, `LeipzigDG`, `CondalDG`, `KingdomDG` | Draws the to-move marker inside the board frame |
 
 Figurine fonts (answers section): `ZurichFigurine.TTF`, `HastingsFigurine.TTF`,
 `LinaresFigurine.TTF`. Only the piece initials `K Q R B N` are set in the
@@ -650,18 +650,22 @@ letters and no full alphabet. The recovery was checked against the extracted
 Fonts with a broken VDMX table are patched automatically on first run; the
 patched copy is saved as `*_patch.ttf` and reused.
 
-> **Missing font.** `AlphaDG.ttf` was documented by earlier releases but is
-> **not** present in `Fonts/`. Asking for it produces a clear error listing what
-> is available, rather than silently rendering with the wrong character map.
-> The bundled `chess-alpha` (Chess Alpha) uses the same piece map but is not a
-> substitute: it has no `z` (top border fill) and none of the to-move symbols
-> (`F G I M f i`), which is what the DG variant added.
+> **`AlphaDG.ttf` is rebuilt, not original.** Earlier releases documented it
+> without shipping it. The 2011 example PDFs carry it embedded, and 52 of the 56
+> characters the renderers need survive there; [`build_alphadg.py`](build_alphadg.py)
+> merges those subsets, restores the character map the extraction dropped, and
+> derives the four that are missing:
 >
-> 52 of the 55 characters the renderers need did survive, embedded in the 2011
-> example PDFs, and are kept in [`Fonts-recovered/`](Fonts-recovered/README.md)
-> with their character map. They are deliberately not installed: a 52/55 font
-> announced in `FONT_NAMES` would render wrongly under `--no-coords` and
-> `--symbol triangle` without saying so.
+> | Character | What it is | Where it comes from |
+> |---|---|---|
+> | `'` | bottom border fill | `z` mirrored — the rule holds exactly for both corner pairs Alpha still has |
+> | `$` | left border edge | `%` mirrored left to right, as LeipzigDG, CondalDG and KingdomDG all draw it |
+> | `f` `i` | triangle to-move markers | drawn: the shape is the one all three of those fonts share, fitted to Alpha's own symbol box and stroke |
+>
+> The first board of `ex1` renders pixel-for-pixel identical to the 2011
+> original, which is what says the recovered mapping is right. The two triangles
+> are the only part of the font that is a drawing rather than a recovery. Run
+> `python build_alphadg.py --check` to see each derivation and its test.
 
 Two of the bundled fonts (`Chess Adventurer`, `Chess Cases`) are licensed as
 non-embeddable. DiagPDF leaves them out of EPUB and DOCX packages and says so;

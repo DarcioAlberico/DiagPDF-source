@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import pytest
-from conftest import START_FEN, board_from_diagram
+from conftest import MISSING_FONT, START_FEN, board_from_diagram
 
 import fen2rtf as F
 
@@ -112,7 +112,7 @@ def test_known_fonts_resolve_to_a_real_file(name):
     assert (FONTS_DIR / F.resolve_board_font(name)).is_file()
 
 
-@pytest.mark.parametrize('name', ['AlphaDG', 'ZurichFigurine', '', 'Comic Sans'])
+@pytest.mark.parametrize('name', [MISSING_FONT, 'ZurichFigurine', '', 'Comic Sans'])
 def test_unknown_fonts_raise_with_a_usable_message(name):
     with pytest.raises(F.UnknownFontError) as excinfo:
         F.resolve_board_font(name)
@@ -123,9 +123,9 @@ def test_unknown_fonts_raise_with_a_usable_message(name):
 
 
 def test_coerce_falls_back_and_says_so(capsys):
-    assert F.coerce_board_font('AlphaDG') == F._default_board_font_name()
+    assert F.coerce_board_font(MISSING_FONT) == F._default_board_font_name()
     err = capsys.readouterr().err
-    assert 'unknown board font' in err and 'AlphaDG' in err
+    assert 'unknown board font' in err and MISSING_FONT in err
 
 
 def test_coerce_leaves_a_known_font_alone(capsys):

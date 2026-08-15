@@ -1,5 +1,90 @@
 # Changelog
 
+## 0.16.0 — A `AlphaDG`, remontada
+
+A última fonte que faltava. A 0.15.0 encontrou a **Chess Alpha DG** embutida em
+três dos PDFs de exemplo de 2011 e decidiu **não** instalá-la: 52 dos 55
+caracteres exigidos renderizariam errado em silêncio com `--no-coords` e
+`--symbol triangle`, que é a corrupção que a resolução estrita da C8 existe para
+impedir. Esta versão fecha a lacuna em vez de contorná-la.
+
+```bash
+diagpdf livro.pgn -o livro.pdf -f AlphaDG --symbol triangle --no-coords
+python build_alphadg.py --check      # mostra cada derivação e o teste dela
+```
+
+### O erro que quase passou: CID não é glyph id
+
+O `charmap.json` guardado na 0.15.0 mapeia codepoint → caractere, e a primeira
+montagem tratou o código que aparece no texto do PDF como se fosse o índice do
+glifo no arquivo extraído. O resultado é uma fonte **bem-formada** — abre no
+fontTools, tem as tabelas todas — em que o rei é uma tira de borda e a dama é um
+glifo vazio.
+
+O que pegou isso não foi inspecionar o arquivo, foi compará-lo com quem já
+tinha razão: as caixas delimitadoras de cada caractere na `LeipzigDG`, que ainda
+tem seu `cmap`. Peça é célula cheia, borda é tira fina, e as duas colunas
+discordavam em tudo. Estes PDFs trazem um `/CIDToGIDMap` de verdade; lido ele, as
+duas colunas passaram a concordar caractere a caractere.
+
+### Os quatro caracteres que não estavam lá
+
+| Caractere | O que é | De onde veio |
+|---|---|---|
+| `'` | preenchimento da borda inferior | `z` espelhado no meio do em. A regra vale **exata** para os dois pares de canto que a própria Alpha tem (`!`→`&`, `#`→`(`), e para o par de preenchimento da Leipzig e da Kingdom, que têm os dois |
+| `$` | borda esquerda | `%` espelhado na horizontal — é assim que Leipzig, Condal e Kingdom o desenham, com um erro máximo de 1 unidade entre as três |
+| `f` `i` | indicador triangular | **Desenhados.** O triângulo é idêntico ao inteiro nas três fontes da família, então é constante de família e não escolha de desenho. Foi ajustado às proporções da Alpha: ela desenha os símbolos numa caixa de 1200×1200 onde as outras usam 1400×1400, com o mesmo canto em (2000, 200) — daí a altura escalada por 6/7 — e o vazado é recuado 100 unidades, a espessura que a própria Alpha usa no quadrado e no círculo |
+
+Nenhum dos três PDFs precisou de `'` ou `$` porque todos foram gerados **com
+coordenadas**, e aí a base e a lateral vêm dentro dos caracteres de coluna e de
+linha. Nenhum usou triângulo: um usou círculo, dois usaram quadrado.
+
+### A prova: pixel a pixel contra 2011
+
+Fonte remontada se confere renderizando, não abrindo. Os três exemplos foram
+regerados com a `AlphaDG` e o primeiro diagrama de cada um foi comparado com o
+mesmo diagrama do arquivo de 2011, na mesma resolução:
+
+| Exemplo | Recorte | Tinta | Pixels divergentes |
+|---|---|---|---|
+| `ex1_2col_alpha_plain` | 670×616 | 56.782 px | **0** |
+| `ex2_2col_alpha_lines` | 670×617 | 57.876 px | **0** |
+| `ex4_2col_answers_1col` | 670×616 | 56.850 px | **0** |
+
+Os dois triângulos não têm como ser comparados assim — não existiam em lugar
+nenhum. Foram conferidos contra a `LeipzigDG` lado a lado, com e sem
+coordenadas.
+
+### Um defeito que a fonte revelou: faltava um caractere na lista
+
+Com a fonte instalada e `--no-coords`, o tabuleiro saiu **sem a borda esquerda**.
+O `fen.py` escrevia `'$'` literal para essa lateral, mas `_ALPHA_REQUIRED_CHARS`
+não pedia o `$` — a lista dizia 55 onde o programa precisa de **56**. Uma fonte
+de layout Alpha sem `$` passava na verificação de completude e desenhava um
+tabuleiro aberto do lado esquerdo, sem aviso.
+
+O `$` virou `BDR_W` em `chars.py`, entrou na lista e o `fen.py` passou a usar a
+constante. As outras quatro fontes de layout Alpha já tinham o glifo, então
+nenhuma mudou de classificação — verificado uma a uma.
+
+### `AlphaDG` era o nome de "fonte que não existe" em 12 testes
+
+Doze testes usavam `'AlphaDG'` como o nome inválido para checar a mensagem de
+erro do C8. Com a fonte instalada eles pararam de testar o caminho de erro — o
+mesmo que a 0.15.0 tinha achado com `'Zurich'` no teste de figurine. Agora o nome
+vem de `MISSING_FONT` no `conftest.py`, **afirmado ausente na carga**: instalar
+uma fonte com esse nome falha ali e em lugar nenhum mais.
+
+### Compatibilidade
+
+Os **182 documentos do corpus saem idênticos** aos de antes da fonte existir
+(`output_snapshot.py compare`). A fonte padrão continua `ChessMerida`: a
+preferência por `AlphaDG` em `_default_board_font_name` só vale quando a Merida
+não está instalada.
+
+**Entregue:** 1.414 testes verdes (os 8 novos são as parametrizações por fonte
+que a `AlphaDG` acrescenta), ruff limpo.
+
 ## 0.15.0 — Zurich e Linares, recuperadas do PDF
 
 Duas das três fontes que o [ROADMAP](ROADMAP.md) dava como "serão compradas"
