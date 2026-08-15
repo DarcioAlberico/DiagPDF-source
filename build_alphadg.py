@@ -11,6 +11,15 @@ Run it from the project root::
     python build_alphadg.py            # writes Fonts/AlphaDG.ttf
     python build_alphadg.py --check    # says what it would do, writes nothing
 
+.. note::
+
+   The real font turned up after this was written — the v0.2.3 release in the
+   author's public repository has it — and it judged the result: **54 of the 56
+   characters came back identical**, both mirrored border pieces included. Only
+   the two drawn triangles differ. So this is no longer the way to obtain the
+   font; it is the record of how a CID-keyed subset is read back out of a PDF,
+   and a check with something to be checked against.
+
 Nothing here is guessed. Each step below says what it is derived from, and
 ``--check`` prints the evidence so the claims can be re-tested rather than
 believed:

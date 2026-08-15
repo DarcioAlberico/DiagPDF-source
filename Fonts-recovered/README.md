@@ -3,6 +3,13 @@
 Nada aqui é usado pelo programa. `Fonts-recovered/` não é lido por `_scan_fonts`,
 que varre `Fonts/` — isto descreve como a `AlphaDG` foi remontada.
 
+> 📌 **As originais apareceram depois.** Na 0.16.1 descobriu-se que a `AlphaDG`,
+> a `Zurich` e a `Linares` completas estavam o tempo todo no repositório público
+> `DarcioAlberico/DiagPDF`, no release v0.2.3. São elas que estão instaladas
+> agora. A remontagem descrita abaixo deixou de ser o único caminho — e virou
+> conferência: comparada com a original, acertou **54 dos 56** caracteres, com os
+> dois espelhamentos idênticos e só os dois triângulos desenhados diferentes.
+
 > ⚠️ **Esta pasta chega vazia num clone.** Versionados ficam só este README e o
 > `charmap.json`. Os arquivos de fonte e os PDFs de origem **não entram no
 > repositório**: um subconjunto extraído de PDF é a tipografia, e o PDF que o

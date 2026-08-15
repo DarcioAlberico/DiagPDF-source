@@ -1,5 +1,59 @@
 # Changelog
 
+## 0.16.1 — As originais estavam no GitHub do autor
+
+A `AlphaDG`, a `Zurich` e a `Linares` **existem**, completas, no repositório
+público `DarcioAlberico/DiagPDF` — o release v0.2.3, de março de 2026. O `Fonts/`
+de lá tem as três; o desta árvore de código nunca teve. Ninguém tinha comparado
+os dois.
+
+Foram encontradas quando este repositório ia ser publicado e o nome `DiagPDF` já
+estava ocupado. As três estão instaladas agora, no lugar das remontadas.
+
+| | Remontada (0.16.0) | Original |
+|---|---|---|
+| `AlphaDG.ttf` | 57 glifos, 56 caracteres | **137 glifos, 119 caracteres**, "Chess Alpha DG", 2014 |
+| `ZurichFigurine.TTF` | 35 caracteres, subconjunto do `chesswin.pdf` | **123 glifos**, tipografia inteira |
+| `LinaresFigurine.TTF` | ASCII do `chesswin.pdf` | **123 glifos**, tipografia inteira |
+
+### O que a original disse sobre a remontagem
+
+É a prova que a 0.16.0 não tinha como fazer. Dos **56 caracteres** que o layout
+exige, a remontada acertou **54 idênticos**. Os dois que não:
+
+| Caractere | Como foi obtido em 0.16.0 | Contra a original |
+|---|---|---|
+| `'` borda inferior | **Deduzido**: `z` espelhado, regra testada nos pares de canto | ✅ **Idêntico** — os mesmos pontos, só a ordem do contorno difere |
+| `$` borda esquerda | **Deduzido**: `%` espelhado, como Leipzig, Condal e Kingdom fazem | ✅ **Idêntico** |
+| `f` `i` triângulos | **Desenhados**, sem fonte de referência | ❌ Diferentes: mesma caixa (82,0)-(2000,2048), mas 12 e 9 pontos no original contra 14 e 11 |
+
+Onde houve dedução com regra que podia ser testada, o resultado bateu ao ponto.
+Onde houve desenho, saiu parecido e não igual. A distinção que a 0.16.0 fez entre
+*recuperado* e *desenhado* — e que o README repetia caractere a caractere — era a
+distinção certa, e foi a única parte do trabalho que a original podia reprovar.
+
+### O que muda no programa
+
+- **Nada na verificação de licença.** As três têm `fsType` que permite
+  incorporar: a `AlphaDG` traz 0, e a `Zurich` e a `Linares` trazem 1, um bit
+  reservado que a norma manda ignorar — `font_embedding_allowed` testa o bit
+  `0x0002`. As únicas restritas continuam sendo a `Chess Adventurer` e a
+  `Chess Cases`.
+- **A `AlphaDG` original tem a tabela `VDMX` malformada** que motivou o patch
+  automático da fase 3. Ela é remendada na primeira execução e a cópia vai para
+  `Fonts/AlphaDG_patch.ttf`, como as outras.
+- Os três exemplos `alpha` foram regerados com ela.
+
+### O que continua valendo
+
+O `build_alphadg.py` deixa de ser o único caminho para obter a fonte e passa a
+ser o que sempre foi de mais útil: o registro de como se lê de volta um
+subconjunto CID-keyed embutido num PDF — incluindo a armadilha do `CIDToGIDMap` —
+e uma conferência independente, que agora tem contra o que ser conferida.
+
+Nenhuma das três entra no repositório, e a razão não mudou: são tipografias
+comerciais. O `.gitignore` já as excluía.
+
 ## 0.16.0 — A `AlphaDG`, remontada
 
 A última fonte que faltava. A 0.15.0 encontrou a **Chess Alpha DG** embutida em

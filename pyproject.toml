@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "diagpdf"
-version = "0.16.0"
+version = "0.16.1"
 description = "Convert PGN / FEN / EPD files into pages of chess diagrams (PDF, LaTeX, HTML, EPUB, DOCX, RTF, Markdown)"
 readme = "README.md"
 requires-python = ">=3.10"

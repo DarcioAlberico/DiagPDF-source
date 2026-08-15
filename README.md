@@ -642,18 +642,18 @@ initials `K Q R B N` are set in it; the rest of the movetext stays in the text
 font.
 
 > **Three fonts named in these notes are not distributed here.** `AlphaDG`,
-> `ZurichFigurine` and `LinaresFigurine` were all recovered from PDFs that had
-> them embedded — and a subset extracted from a PDF is the typeface, as is the
-> file carrying it. None of them, and none of the material behind them, is in the
-> repository. `--list-fonts` shows what your copy actually has; asking for a name
-> that is not there is an error listing the available ones, never a silent
-> substitution.
+> `ZurichFigurine` and `LinaresFigurine` are commercial typefaces. They are not
+> in the repository, and neither is the material they were once recovered from —
+> a subset extracted from a PDF is the typeface, as is the file carrying it.
+> `--list-fonts` shows what your copy actually has; asking for a name that is not
+> there is an error listing the available ones, never a silent substitution.
 >
 > What is versioned is the method, so each recovery can be judged and repeated by
 > whoever holds the originals: [`build_alphadg.py`](build_alphadg.py) for the
 > board font, [`Fonts-recovered/README.md`](Fonts-recovered/README.md) for the
-> material it needs, and the 0.15.0 and 0.16.0 entries in
-> [CHANGELOG.md](CHANGELOG.md) for how each was checked.
+> material it needs, and the 0.15.0, 0.16.0 and 0.16.1 entries in
+> [CHANGELOG.md](CHANGELOG.md) for how each was checked — the last of those being
+> where the original fonts turned up and settled how good the rebuild was.
 
 Fonts with a broken VDMX table are patched automatically on first run; the
 patched copy is saved as `*_patch.ttf` and reused.
@@ -675,6 +675,12 @@ missing:
 The first board of `ex1` renders pixel-for-pixel identical to the 2011 original,
 which is what says the recovered mapping is right. The two triangles are the only
 part of the font that is a drawing rather than a recovery.
+
+The real font later turned up, and judged all of that: **54 of the 56 characters
+came back identical**, including both mirrored border pieces. The two drawn
+triangles are the only ones that differ — same bounding box, different outline.
+The script is kept as the record of how a CID-keyed subset is read back out of a
+PDF, and as a check that now has something to be checked against.
 
 If you own the font, or the PDFs it was recovered from, put them back under
 `Fonts-recovered/` as its README describes and run `python build_alphadg.py`
