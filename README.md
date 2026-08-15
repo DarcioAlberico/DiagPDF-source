@@ -377,6 +377,7 @@ diagpdf/            The package
 fen2rtf.py          Compatibility shim — keeps the old imports working
 fen2pdf.spec        PyInstaller build config
 pyproject.toml      Packaging, ruff and pytest configuration
+.github/workflows/  CI: the suite on two systems, LaTeX, and the .exe
 tests/              pytest suite (1427 tests)
 test_smoke.py       One file per output format
 test_batch.py       Batch test: all setting combinations
@@ -593,6 +594,24 @@ would break on every harmless change in object ordering or font subsetting.
 EPUB output is additionally checked with `epubcheck` when it is installed; set
 `EPUBCHECK_JAR` to point at the jar. Without it that one test is skipped and the
 same rules are still verified in `tests/inspectors.py`.
+
+### Continuous integration
+
+`.github/workflows/ci.yml` runs on every push to `main`, on pull requests, and
+on demand:
+
+| Job | What it does |
+|-----|--------------|
+| `pytest` | The suite on Ubuntu and Windows, on Python 3.10 and 3.12, plus `ruff`. It fetches epubcheck and points `EPUBCHECK_JAR` at it, then checks that the conformance test **ran** — a validator that is missing makes its test skip, and a skipped test is green. Linux runs under Xvfb, because the GUI tests open a real window. |
+| `latex` | Installs TeX Live and compiles the LaTeX corpus. Separate from the matrix: a slow, heavy install that nothing else in the suite needs. |
+| `windows-exe` | Builds `DiagPDF.exe` with PyInstaller and uploads it as an artifact of the run. |
+
+The same checks locally:
+
+```bash
+ruff check .
+pytest
+```
 
 ---
 

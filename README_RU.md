@@ -329,6 +329,7 @@ diagpdf/            Пакет с реализацией
 fen2rtf.py          Слой совместимости — сохраняет старые импорты рабочими
 fen2pdf.spec        Конфигурация PyInstaller
 pyproject.toml      Упаковка, настройки ruff и pytest
+.github/workflows/  CI: набор тестов на двух системах, LaTeX и сборка .exe
 tests/              Набор pytest (1427 тестов)
 test_smoke.py       По одному файлу на каждый формат вывода
 test_batch.py       Пакетный тест: все комбинации настроек

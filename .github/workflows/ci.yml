@@ -1,0 +1,170 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Pinned on purpose: a validator that changes under the suite turns a green
+  # run red for reasons that have nothing to do with the commit.
+  EPUBCHECK_VERSION: '5.3.0'
+
+jobs:
+  test:
+    name: pytest · ${{ matrix.os }} · py${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ['3.10', '3.12']   # the range pyproject.toml declares support for
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+
+      # epubcheck is a Java program. Without it, tests/test_outputs.py skips the
+      # one test that checks EPUB 3 conformance with the reference validator.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+
+      - name: Fetch epubcheck ${{ env.EPUBCHECK_VERSION }}
+        shell: bash
+        run: |
+          set -eu
+          url="https://github.com/w3c/epubcheck/releases/download/v${EPUBCHECK_VERSION}/epubcheck-${EPUBCHECK_VERSION}.zip"
+          curl -sSL --retry 3 --fail -o epubcheck.zip "$url"
+          python -c "import zipfile; zipfile.ZipFile('epubcheck.zip').extractall('.epubcheck')"
+          # Located rather than assumed, and printed by Python so the value is a
+          # native path: java on Windows does not understand the /d/a/... form
+          # that $PWD carries under Git Bash.
+          python -c "import pathlib; p=next(pathlib.Path('.epubcheck').rglob('epubcheck.jar')); print('EPUBCHECK_JAR='+str(p.resolve()))" >> "$GITHUB_ENV"
+
+      - name: Lint
+        run: python -m ruff check .
+
+      # test_gui.py builds a real Tk window and closes it; on a headless runner
+      # that needs a display to open at all. python3-tk is here for the Tcl/Tk
+      # shared libraries: the interpreter setup-python installs ships _tkinter,
+      # but it loads libtk at run time from the system.
+      - name: Install Xvfb and the Tk libraries
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends xvfb python3-tk
+
+      - name: Test (Linux)
+        if: runner.os == 'Linux'
+        run: xvfb-run -a python -m pytest -rs
+
+      - name: Test (Windows)
+        if: runner.os == 'Windows'
+        run: python -m pytest -rs
+
+      # A validator that is not there makes its test skip, and a skipped test is
+      # green. This step is what stops that from passing for a working setup.
+      - name: The epubcheck test must have run, not skipped
+        shell: bash
+        run: |
+          set -eu
+          out=$(python -m pytest 'tests/test_outputs.py::test_epub_passes_epubcheck_when_it_is_available' -rs)
+          echo "$out"
+          echo "$out" | grep -q '1 passed'
+          ! echo "$out" | grep -q 'SKIPPED'
+
+  latex:
+    name: LaTeX compiles · Ubuntu
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+
+      # Kept out of the matrix above because it is a slow, heavy install and
+      # nothing else in the suite needs it. chessboard and its skak/chessfss
+      # dependencies live in texlive-games; T2A and babel-russian, which the
+      # Russian example PGN needs, live in texlive-lang-cyrillic.
+      - name: Install TeX Live
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended \
+            texlive-games texlive-lang-cyrillic
+
+      - name: Compile the corpus
+        shell: bash
+        run: |
+          set -eu
+          out=$(python -m pytest tests/test_text_formats.py -k compiles -rs)
+          echo "$out"
+          echo "$out" | grep -qE '[0-9]+ passed'
+          ! echo "$out" | grep -q 'no pdflatex installed'
+
+  windows-exe:
+    name: Windows executable
+    runs-on: windows-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt pyinstaller
+
+      - name: Build
+        run: pyinstaller fen2pdf.spec
+
+      - name: The build must have produced a real executable
+        shell: bash
+        run: |
+          set -eu
+          # A windowed build cannot be asked for --version: console=False in the
+          # spec means it has no stdout to answer on. Size is the check left.
+          python -c "import pathlib,sys; s=pathlib.Path('dist/DiagPDF.exe').stat().st_size; print(f'{s} bytes'); sys.exit(0 if s > 10*1024*1024 else 1)"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DiagPDF-exe
+          path: dist/DiagPDF.exe
+          if-no-files-found: error

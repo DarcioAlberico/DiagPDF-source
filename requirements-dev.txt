@@ -3,8 +3,15 @@
 #   pytest
 -r requirements.txt
 pytest>=8.0
+ruff>=0.5
+
+# Reads the generated PDFs back: paper size, margins, metadata, outline, cover
+# and contents are checked against what a reader actually sees. Without it those
+# tests skip themselves, which is a green run that verified nothing.
+pypdfium2>=4.0
 
 # Optional: EPUB 3 conformance is checked against the reference validator when
 # it is available. Install epubcheck and put it on PATH, or point EPUBCHECK_JAR
 # at the jar. Without it that single test is skipped — the suite still checks
 # the same rules itself (see tests/inspectors.py, epub3_problems).
+# The CI workflow fetches it and fails if that test skips.
