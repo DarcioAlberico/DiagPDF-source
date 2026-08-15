@@ -881,10 +881,14 @@ Markdown com diagramas em Unicode ou imagem; LaTeX usando `chessboard`/`skak`.
 > como o que são — subconjuntos recuperados de `chesswin.pdf`. Só a `AlphaDG.ttf`
 > continua citada e ausente, agora com a ressalva explícita no README.
 >
-> **Situação em 0.16.0 (Doc3):** fechado. São 18 fontes de tabuleiro: a
-> `AlphaDG.ttf` foi remontada a partir das cópias embutidas nos exemplos de 2011
-> e instalada, e o README descreve o que nela é recuperado e o que é desenhado.
-> Nenhum dos três nomes que o README citava sem existir continua sem arquivo.
+> **Situação em 0.16.0 (Doc3):** fechado, por um caminho que a fase 0 não previa.
+> A `AlphaDG.ttf` foi remontada das cópias embutidas nos exemplos de 2011, e
+> então **nenhuma das três fontes recuperadas de PDF passou a ser distribuída** —
+> nem ela, nem a `Zurich` e a `Linares` da 0.15.0, nem o material de origem. O
+> repositório traz 17 fontes de tabuleiro e uma figurina, e os READMEs dizem
+> exatamente isso: o que existe, o que foi recuperado e onde está o método. O
+> defeito que a Doc3 descrevia — documentação citando arquivo ausente — não
+> volta, porque nada é citado como se estivesse lá.
 >
 > **Situação em 0.15.0 (Doc6):** o `README_RU.md` estava parado no release
 > original — anunciava saída só em PDF, 4 fontes de tabuleiro, `AlphaDG` como

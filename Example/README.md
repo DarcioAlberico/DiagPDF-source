@@ -37,6 +37,13 @@ python fen2rtf.py Example/examples.pgn -o Example/ex6_4col_kingdom.pdf \
   -l 4 -f KingdomDG --symbol triangle
 ```
 
+⚠️ **Três nomes desses comandos não existem num clone.** A `AlphaDG` (ex1, ex2,
+ex4) e a `Zurich` (ex4) foram recuperadas de PDFs e não são distribuídas — veja
+[`../Fonts-recovered/README.md`](../Fonts-recovered/README.md). Os PDFs prontos
+estão aqui; para regerá-los é preciso ter as fontes. Trocando `-f AlphaDG` por
+`-f chess-alpha` e `--figurine-font Zurich` por `Hastings`, os comandos rodam com
+o que o repositório traz, com as diferenças que a seção seguinte descreve.
+
 ## O que mudou na 0.16.0
 
 Os três exemplos com `alpha` no nome **voltaram para a `AlphaDG`**, a fonte com

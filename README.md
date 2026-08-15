@@ -144,7 +144,7 @@ python fen2rtf.py input.pgn [options]
 | `--answers-upside-down` | — | Print the answers rotated 180° (PDF, HTML, EPUB) |
 | `--watermark TEXT` | — | Stamp TEXT across every page (PDF, LaTeX, HTML, DOCX, RTF) |
 | `--watermark-opacity PCT` | `10` | How strong the watermark is, 1–100 |
-| `--figurine-font NAME` | `Zurich` | Figurine font for answers: `Zurich` / `Hastings` / `Linares` |
+| `--figurine-font NAME` | first installed | Figurine font for answers — `--list-fonts` shows the names your copy has |
 | `--from N` | — | First position to include (1-based) |
 | `--to N` | — | Last position to include (1-based) |
 | `--keep-numbers` | — | Keep original position numbers instead of renumbering from 1 (alias: `--no-renumber`) |
@@ -387,7 +387,7 @@ requirements.txt    Runtime dependencies
 requirements-dev.txt Test dependencies
 icon.ico            Application icon
 Fonts/              Chess diagram fonts (TTF)
-Fonts-recovered/    Fonts pulled out of PDFs: reference only, not loaded
+Fonts-recovered/    How AlphaDG is rebuilt; the material itself is not versioned
 Example/            Sample PGNs (including a chaptered one) and demo PDFs,
                     with the command behind each one in its README
 ROADMAP.md          Phased plan
@@ -635,45 +635,51 @@ Two families ship with different character maps:
 | Family | Fonts | Notes |
 |--------|-------|-------|
 | Merida-compatible | `ChessMerida` and the `Chess *` set | Default; supports `--border simple/double/none` |
-| Legacy DG | `AlphaDG`, `LeipzigDG`, `CondalDG`, `KingdomDG` | Draws the to-move marker inside the board frame |
+| Legacy DG | `LeipzigDG`, `CondalDG`, `KingdomDG` | Draws the to-move marker inside the board frame |
 
-Figurine fonts (answers section): `ZurichFigurine.TTF`, `HastingsFigurine.TTF`,
-`LinaresFigurine.TTF`. Only the piece initials `K Q R B N` are set in the
-figurine font; the rest of the movetext stays in the text font.
+Figurine font for the answers section: `HastingsFigurine.TTF`. Only the piece
+initials `K Q R B N` are set in it; the rest of the movetext stays in the text
+font.
 
-`ZurichFigurine.TTF` and `LinaresFigurine.TTF` were recovered from the embedded
-copies in `fonts_6a7de6c2db0e9/chesswin.pdf`, so they carry only the glyphs that
-PDF used. That covers every character DiagPDF asks of a figurine font, but they
-are not the complete typefaces — Zurich in particular has no lowercase piece
-letters and no full alphabet. The recovery was checked against the extracted
-`HastingsFigurine`, whose outlines match the bundled original exactly.
+> **Three fonts named in these notes are not distributed here.** `AlphaDG`,
+> `ZurichFigurine` and `LinaresFigurine` were all recovered from PDFs that had
+> them embedded — and a subset extracted from a PDF is the typeface, as is the
+> file carrying it. None of them, and none of the material behind them, is in the
+> repository. `--list-fonts` shows what your copy actually has; asking for a name
+> that is not there is an error listing the available ones, never a silent
+> substitution.
+>
+> What is versioned is the method, so each recovery can be judged and repeated by
+> whoever holds the originals: [`build_alphadg.py`](build_alphadg.py) for the
+> board font, [`Fonts-recovered/README.md`](Fonts-recovered/README.md) for the
+> material it needs, and the 0.15.0 and 0.16.0 entries in
+> [CHANGELOG.md](CHANGELOG.md) for how each was checked.
 
 Fonts with a broken VDMX table are patched automatically on first run; the
 patched copy is saved as `*_patch.ttf` and reused.
 
-> **`AlphaDG` is not distributed here — neither the font nor what it is made
-> from.** Chess Alpha DG is a commercial typeface. A clone has the other 17
-> fonts and reports `AlphaDG` as unknown, with the available names listed.
->
-> What is versioned is the method. The 2011 example PDFs carry the font
-> embedded, and 52 of the 56 characters the renderers need survive there;
-> [`build_alphadg.py`](build_alphadg.py) merges those subsets, restores the
-> character map the extraction dropped, and derives the four that are missing:
->
-> | Character | What it is | Where it comes from |
-> |---|---|---|
-> | `'` | bottom border fill | `z` mirrored — the rule holds exactly for both corner pairs Alpha still has |
-> | `$` | left border edge | `%` mirrored left to right, as LeipzigDG, CondalDG and KingdomDG all draw it |
-> | `f` `i` | triangle to-move markers | drawn: the shape is the one all three of those fonts share, fitted to Alpha's own symbol box and stroke |
->
-> The first board of `ex1` renders pixel-for-pixel identical to the 2011
-> original, which is what says the recovered mapping is right. The two triangles
-> are the only part of the font that is a drawing rather than a recovery.
->
-> If you own the font, or the PDFs it was recovered from, put them back under
-> `Fonts-recovered/` as its README describes and run `python build_alphadg.py`
-> (`--check` prints each derivation and its test). Without them the script says
-> what is missing and stops.
+### Rebuilding AlphaDG
+
+Of the three, the board font is the one with a recipe in the repository. The
+2011 example PDFs carry it embedded, and 52 of the 56 characters the renderers
+need survive there; [`build_alphadg.py`](build_alphadg.py) merges those subsets,
+restores the character map the extraction dropped, and derives the four that are
+missing:
+
+| Character | What it is | Where it comes from |
+|---|---|---|
+| `'` | bottom border fill | `z` mirrored — the rule holds exactly for both corner pairs Alpha still has |
+| `$` | left border edge | `%` mirrored left to right, as LeipzigDG, CondalDG and KingdomDG all draw it |
+| `f` `i` | triangle to-move markers | drawn: the shape is the one all three of those fonts share, fitted to Alpha's own symbol box and stroke |
+
+The first board of `ex1` renders pixel-for-pixel identical to the 2011 original,
+which is what says the recovered mapping is right. The two triangles are the only
+part of the font that is a drawing rather than a recovery.
+
+If you own the font, or the PDFs it was recovered from, put them back under
+`Fonts-recovered/` as its README describes and run `python build_alphadg.py`
+(`--check` prints each derivation and its test). Without them the script says
+what is missing and stops.
 
 Two of the bundled fonts (`Chess Adventurer`, `Chess Cases`) are licensed as
 non-embeddable. DiagPDF leaves them out of EPUB and DOCX packages and says so;

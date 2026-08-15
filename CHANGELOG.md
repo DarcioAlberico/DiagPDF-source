@@ -75,7 +75,25 @@ mesmo que a 0.15.0 tinha achado com `'Zurich'` no teste de figurine. Agora o nom
 vem de `MISSING_FONT` no `conftest.py`, **afirmado ausente na carga**: instalar
 uma fonte com esse nome falha ali e em lugar nenhum mais.
 
-### A fonte não é distribuída, e o material de que ela sai também não
+### Nenhuma fonte recuperada de PDF é distribuída
+
+O critério vale para as três, não só para a `AlphaDG`. A `ZurichFigurine` e a
+`LinaresFigurine`, recuperadas na 0.15.0, saíram de `Fonts/` junto com a pasta
+`fonts_6a7de6c2db0e9/` (76 fontes extraídas e o `chesswin.pdf` de onde vieram).
+
+Um clone fica com **17 fontes de tabuleiro e uma figurina** — a `Hastings`, que é
+original e sempre esteve no pacote. O padrão de `--figurine-font`, que a 0.15.0
+tinha passado para `Zurich`, volta a ser resolvido pelo que está instalado:
+`_default_figurine_font_name` prefere a Zurich, depois a Hastings, e num clone
+cai na segunda sem que ninguém precise mudar nada.
+
+A suíte já estava preparada para isso — foi a lição da 0.15.0. Os testes de
+figurina iteram sobre `FIGURINE_NAMES` e o de paridade pula quando só existe uma
+fonte, em vez de pedir a segunda pelo nome. No estado de um clone — 17 fontes
+de tabuleiro e uma figurina — a suíte dá **1.403 testes verdes e 22 pulados**, e
+o corpus dos 182 documentos gera inteiro.
+
+### A `AlphaDG` não é distribuída, e o material de que ela sai também não
 
 A `Chess Alpha DG` é comercial. **Nada dela entra no repositório**: nem a
 `Fonts/AlphaDG.ttf`, nem os subconjuntos extraídos, nem os PDFs de 2011 que os
@@ -89,7 +107,7 @@ Consequências, ditas de uma vez:
 - Um clone tem **17 fontes** e responde `AlphaDG` como desconhecida, com a lista
   das disponíveis — a resolução estrita da C8 fazendo o trabalho dela.
 - A **CI não constrói a fonte** e o `.exe` que ela publica sai com as 17. A suíte
-  passa assim: nada nela exige que a `AlphaDG` exista (`1.406 testes` sem ela).
+  passa assim: nada nela exige que a `AlphaDG` exista.
 - Quem tem os arquivos os põe de volta em `Fonts-recovered/` e roda o script.
   Sem eles, ele **diz o que falta e para** em vez de estourar um traceback.
 - Os três exemplos `alpha` de `Example/` continuam gerados com ela e, como em

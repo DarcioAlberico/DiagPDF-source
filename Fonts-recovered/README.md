@@ -5,12 +5,17 @@ que varre `Fonts/` — isto descreve como a `AlphaDG` foi remontada.
 
 > ⚠️ **Esta pasta chega vazia num clone.** Versionados ficam só este README e o
 > `charmap.json`. Os arquivos de fonte e os PDFs de origem **não entram no
-> repositório**: a `Chess Alpha DG` é uma tipografia comercial, e tanto os
-> subconjuntos extraídos quanto os PDFs que os embutem são a fonte em si. Quem
-> tiver os arquivos os coloca de volta aqui com os nomes da tabela abaixo e roda
-> o [`../build_alphadg.py`](../build_alphadg.py); sem eles o script diz o que
-> falta e para. O `Fonts/AlphaDG.ttf` também não é versionado, e a CI não o
-> constrói — a suíte roda com as 17 fontes do pacote.
+> repositório**: um subconjunto extraído de PDF é a tipografia, e o PDF que o
+> carrega também. Quem tiver os arquivos os coloca de volta aqui com os nomes da
+> tabela abaixo e roda o [`../build_alphadg.py`](../build_alphadg.py); sem eles o
+> script diz o que falta e para. O `Fonts/AlphaDG.ttf` também não é versionado, e
+> a CI não o constrói.
+>
+> O mesmo critério vale para as figurinas: `Fonts/ZurichFigurine.TTF` e
+> `Fonts/LinaresFigurine.TTF`, recuperadas do `chesswin.pdf` na 0.15.0, saíram do
+> repositório junto com a pasta `fonts_6a7de6c2db0e9/` de onde vieram. Um clone
+> fica com **17 fontes de tabuleiro e uma figurina**, a `Hastings`, que é
+> original e sempre esteve no pacote.
 
 ## `Chess Alpha DG` — a matéria-prima da fonte remontada
 
