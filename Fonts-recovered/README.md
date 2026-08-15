@@ -1,8 +1,16 @@
 # Fontes recuperadas de PDFs
 
 Nada aqui é usado pelo programa. `Fonts-recovered/` não é lido por `_scan_fonts`,
-que varre `Fonts/` — isto é material de referência, guardado porque não existe em
-mais nenhum lugar do repositório.
+que varre `Fonts/` — isto descreve como a `AlphaDG` foi remontada.
+
+> ⚠️ **Esta pasta chega vazia num clone.** Versionados ficam só este README e o
+> `charmap.json`. Os arquivos de fonte e os PDFs de origem **não entram no
+> repositório**: a `Chess Alpha DG` é uma tipografia comercial, e tanto os
+> subconjuntos extraídos quanto os PDFs que os embutem são a fonte em si. Quem
+> tiver os arquivos os coloca de volta aqui com os nomes da tabela abaixo e roda
+> o [`../build_alphadg.py`](../build_alphadg.py); sem eles o script diz o que
+> falta e para. O `Fonts/AlphaDG.ttf` também não é versionado, e a CI não o
+> constrói — a suíte roda com as 17 fontes do pacote.
 
 ## `Chess Alpha DG` — a matéria-prima da fonte remontada
 
@@ -10,22 +18,17 @@ Os PDFs de exemplo originais, gerados em 2011 quando o autor ainda tinha a fonte
 carregam a **`Chess Alpha DG` de verdade** embutida. Regenerar aqueles arquivos
 apagaria as únicas cópias, então elas foram extraídas antes.
 
-Na **0.16.0** estas cópias deixaram de ser só material de referência: são a
-entrada de [`../build_alphadg.py`](../build_alphadg.py), que as junta, devolve o
-mapa de caracteres e desenha o que falta, produzindo a `Fonts/AlphaDG.ttf`. Os
-arquivos aqui continuam intocados — a fonte é gerada, não editada à mão.
+Na **0.16.0** estas cópias viraram a entrada do `build_alphadg.py`, que as junta,
+devolve o mapa de caracteres e desenha o que falta, produzindo a
+`Fonts/AlphaDG.ttf`. Os arquivos continuam intocados — a fonte é gerada, não
+editada à mão, e duas construções dão o mesmo arquivo byte a byte.
 
-**A `Fonts/AlphaDG.ttf` não é versionada.** O repositório guarda a matéria-prima
-e a receita, não o arquivo de fonte pronto; quem clonar roda o script uma vez. É
-também o que a CI faz antes de testar e antes de montar o `.exe`, de modo que o
-script não pode apodrecer sem alguém notar.
-
-| Arquivo | Origem |
+| Arquivo esperado | Origem |
 |---|---|
 | `ChessAlphaDG--from-ex1_2col_alpha_plain.ttf` | `Example/ex1_2col_alpha_plain.pdf` |
 | `ChessAlphaDG--from-ex2_2col_alpha_lines.ttf` | `Example/ex2_2col_alpha_lines.pdf` |
 | `ChessAlphaDG--from-ex4_2col_answers_1col.ttf` | `Example/ex4_2col_answers_1col.pdf` |
-| `source-pdfs/` | Os três PDFs originais, para a extração poder ser refeita e conferida |
+| `source-pdfs/` | Os três PDFs de 2011, de onde saem as fontes **e** o mapa de caracteres |
 
 **Cobertura: 52 dos 56 caracteres** que `_ALPHA_REQUIRED_CHARS` exige. Faltam
 quatro, e cada um falta por um motivo que se explica:
@@ -61,12 +64,13 @@ uma fonte bem-formada em que o rei é uma tira de borda. O
 | `ZurichFigurine--from-ex4_2col_answers_1col.ttf` | `Example/ex4_2col_answers_1col.pdf` |
 | `HastingsFigurine--from-ex5_3col_answers_2col.ttf` | `Example/ex5_3col_answers_2col.pdf` |
 
-Servem de prova independente da recuperação feita na 0.15.0. As figurinas
+Serviram de prova independente da recuperação feita na 0.15.0. As figurinas
 instaladas em `Fonts/` vieram de `fonts_6a7de6c2db0e9/chesswin.pdf`; estas vieram
 dos PDFs do autor, anos antes e por outro caminho. Os cinco glifos de peça
 (`K Q R B N`) das duas Zurich são **idênticos ao inteiro** — mesma caixa
 delimitadora, mesma área. O mesmo vale para a Hastings contra a original de
-`Fonts/`.
+`Fonts/`. Estes dois arquivos saíram do repositório junto com o resto: a
+conferência está registrada, os contornos não.
 
 ## Como refazer a extração
 

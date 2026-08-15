@@ -75,25 +75,30 @@ mesmo que a 0.15.0 tinha achado com `'Zurich'` no teste de figurine. Agora o nom
 vem de `MISSING_FONT` no `conftest.py`, **afirmado ausente na carga**: instalar
 uma fonte com esse nome falha ali e em lugar nenhum mais.
 
-### A fonte é gerada, não distribuída
+### A fonte não é distribuída, e o material de que ela sai também não
 
-`Fonts/AlphaDG.ttf` **não entra no repositório**. Versionados ficam a
-matéria-prima (`Fonts-recovered/`) e a receita (`build_alphadg.py`); quem clona
-roda o script uma vez:
+A `Chess Alpha DG` é comercial. **Nada dela entra no repositório**: nem a
+`Fonts/AlphaDG.ttf`, nem os subconjuntos extraídos, nem os PDFs de 2011 que os
+embutem — subconjunto extraído de PDF *é* a fonte, e o PDF que o carrega também.
+Versionado fica o **método**: o `build_alphadg.py`, com cada derivação e o teste
+dela, e o `Fonts-recovered/README.md`, que diz quais arquivos o script espera e
+com que nomes.
 
-```bash
-python build_alphadg.py
-```
+Consequências, ditas de uma vez:
 
-A CI o executa antes de testar e antes de montar o `.exe` — que empacota tudo que
-estiver em `Fonts/`, então a ordem importa. Assim o script não pode apodrecer sem
-alguém notar: ele se recusa a escrever se as regras de que deriva os caracteres
-que faltam deixarem de valer.
+- Um clone tem **17 fontes** e responde `AlphaDG` como desconhecida, com a lista
+  das disponíveis — a resolução estrita da C8 fazendo o trabalho dela.
+- A **CI não constrói a fonte** e o `.exe` que ela publica sai com as 17. A suíte
+  passa assim: nada nela exige que a `AlphaDG` exista (`1.406 testes` sem ela).
+- Quem tem os arquivos os põe de volta em `Fonts-recovered/` e roda o script.
+  Sem eles, ele **diz o que falta e para** em vez de estourar um traceback.
+- Os três exemplos `alpha` de `Example/` continuam gerados com ela e, como em
+  2011, carregam o subconjunto embutido. Foi decisão explícita: eles são a saída
+  que o programa produz, e é assim que a fonte chegou até aqui.
 
 Duas construções da mesma entrada dão o **mesmo arquivo byte a byte**. Não davam:
 o fontTools carimba a hora do `save` em `head.modified` por padrão, e artefato de
-build que muda sozinho a cada execução não serve para comparar nada. Rodar sem a
-fonte também foi conferido — 17 fontes, suíte verde, é o estado de quem clona.
+build que muda sozinho a cada execução não serve para comparar nada.
 
 ### Compatibilidade
 

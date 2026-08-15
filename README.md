@@ -19,8 +19,7 @@ Grab the latest **DiagPDF.exe** from [Releases](../../releases) — no Python re
 - **Diagrams from a game's moves**, so an ordinary PGN works — no `[FEN]` tag needed
 - Writes `.pdf`, `.tex`, `.html`, `.epub`, `.docx`, `.rtf`, `.md`
 - 7 page layouts: 1–4 columns, up to 20 diagrams per page
-- 17 board fonts bundled, plus `AlphaDG` rebuilt by `build_alphadg.py` — run
-  `--list-fonts` for the list installed on your copy
+- 17 board fonts — run `--list-fonts` for the list installed on your copy
 - **Drop a font into `Fonts/` and it is picked up**, with its piece map chosen
   from the glyphs it actually carries rather than from its file name
 - To-move indicator: square □■, circle ○●, triangle △▲
@@ -58,12 +57,8 @@ Grab the latest **DiagPDF.exe** from [Releases](../../releases) — no Python re
 
 ```bash
 pip install -r requirements.txt
-python build_alphadg.py          # optional: adds the AlphaDG board font
 python fen2rtf.py --gui
 ```
-
-The middle line rebuilds one board font from material in the repository; skip it
-and the other 17 work as they are. See [Fonts](#fonts) for what it does.
 
 Two of those are optional and the file says which: `chess` for diagrams taken
 from a game's moves, and `sv-ttk` for the window's Sun Valley theme. Skip either
@@ -656,18 +651,14 @@ letters and no full alphabet. The recovery was checked against the extracted
 Fonts with a broken VDMX table are patched automatically on first run; the
 patched copy is saved as `*_patch.ttf` and reused.
 
-> **`AlphaDG.ttf` is generated, not shipped.** It is not in `Fonts/` after a
-> clone, and not in the repository at all — build it once:
+> **`AlphaDG` is not distributed here — neither the font nor what it is made
+> from.** Chess Alpha DG is a commercial typeface. A clone has the other 17
+> fonts and reports `AlphaDG` as unknown, with the available names listed.
 >
-> ```bash
-> python build_alphadg.py
-> ```
->
-> Earlier releases documented the font without shipping it. The 2011 example PDFs
-> carry it embedded, and 52 of the 56 characters the renderers need survive
-> there; [`build_alphadg.py`](build_alphadg.py) merges those subsets, restores
-> the character map the extraction dropped, and derives the four that are
-> missing:
+> What is versioned is the method. The 2011 example PDFs carry the font
+> embedded, and 52 of the 56 characters the renderers need survive there;
+> [`build_alphadg.py`](build_alphadg.py) merges those subsets, restores the
+> character map the extraction dropped, and derives the four that are missing:
 >
 > | Character | What it is | Where it comes from |
 > |---|---|---|
@@ -677,8 +668,12 @@ patched copy is saved as `*_patch.ttf` and reused.
 >
 > The first board of `ex1` renders pixel-for-pixel identical to the 2011
 > original, which is what says the recovered mapping is right. The two triangles
-> are the only part of the font that is a drawing rather than a recovery. Run
-> `python build_alphadg.py --check` to see each derivation and its test.
+> are the only part of the font that is a drawing rather than a recovery.
+>
+> If you own the font, or the PDFs it was recovered from, put them back under
+> `Fonts-recovered/` as its README describes and run `python build_alphadg.py`
+> (`--check` prints each derivation and its test). Without them the script says
+> what is missing and stops.
 
 Two of the bundled fonts (`Chess Adventurer`, `Chess Cases`) are licensed as
 non-embeddable. DiagPDF leaves them out of EPUB and DOCX packages and says so;

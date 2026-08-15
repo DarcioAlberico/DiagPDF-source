@@ -207,7 +207,30 @@ def polygon_glyph(contour_list) -> object:
     return pen.glyph()
 
 
+def missing_material() -> list[str]:
+    """What this script needs and does not have.
+
+    The inputs are not in the repository: the 2011 PDFs carry a commercial font
+    embedded, and so do the subsets extracted from them. Whoever has the files
+    puts them back under Fonts-recovered/ and runs this; a plain clone gets a
+    clear message instead of a traceback.
+    """
+    wanted = [RECOVERED / BASE[0], RECOVERED / 'source-pdfs' / BASE[1],
+              RECOVERED / CIRCLE[0], RECOVERED / 'source-pdfs' / CIRCLE[1]]
+    return [str(p.relative_to(ROOT)) for p in wanted if not p.is_file()]
+
+
 def build(check_only: bool) -> int:
+    absent = missing_material()
+    if absent:
+        print('The material this font is rebuilt from is not in the repository.')
+        print('Missing:')
+        for item in absent:
+            print(f'  {item}')
+        print('\nSee Fonts-recovered/README.md. Without it, DiagPDF runs with the')
+        print('17 board fonts that are bundled and reports AlphaDG as unknown.')
+        return 1
+
     base_font = TTFont(RECOVERED / BASE[0])
     base_map = glyph_chars(RECOVERED / 'source-pdfs' / BASE[1])
     circle_font = TTFont(RECOVERED / CIRCLE[0])

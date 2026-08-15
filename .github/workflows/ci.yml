@@ -51,11 +51,9 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements-dev.txt
 
-      # Fonts/AlphaDG.ttf is generated, not committed. Building it here also
-      # tests the builder: it refuses to write if the rules it derives the
-      # missing characters from stop holding.
-      - name: Build AlphaDG
-        run: python build_alphadg.py
+      # No AlphaDG step: the material it is rebuilt from is deliberately not in
+      # the repository, so the runner cannot build it. The suite passes without
+      # it — 17 fonts instead of 18, nothing asserts that one exists.
 
       - name: Fetch epubcheck ${{ env.EPUBCHECK_VERSION }}
         shell: bash
@@ -158,11 +156,9 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt pyinstaller
 
-      # The spec bundles everything in Fonts/, so this has to run first or the
-      # executable ships without the font.
-      - name: Build AlphaDG
-        run: python build_alphadg.py
-
+      # The spec bundles everything in Fonts/, so this executable carries the 17
+      # fonts the repository ships. AlphaDG is not among them: it is rebuilt
+      # from material kept outside the repository, which a runner does not have.
       - name: Build
         run: pyinstaller fen2pdf.spec
 
